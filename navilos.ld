@@ -1,3 +1,7 @@
+MEMORY {
+	MEM (rwx): ORIGIN = 0x0, LENGTH = 128M
+}
+
 ENTRY(vector_start)
 SECTIONS
 {
@@ -8,7 +12,7 @@ SECTIONS
 	{
 		*(vector_start)
 		*(.text .rodata)
-	}
+	} > MEM
 	.data :
 	{
 		*(.data)

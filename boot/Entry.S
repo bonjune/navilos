@@ -66,5 +66,16 @@
         BL  main
 
     dummy_handler:
+        LDR r0, =0xdeadbeef
+        LDR r1, =0xdeadbeef
+        LDR r2, =0xdeadbeef
+        LDR r3, =0xdeadbeef
+        LDR r4, =0xdeadbeef
+        LDR r5, =0xdeadbeef
+        LDR r6, =0xdeadbeef
+        LDR r7, =0xdeadbeef
+        LDR r8, =0xdeadbeef
+        LDR r9, =0xdeadbeef
+        LDR r10, =0xdeadbeef
         B .
 .end

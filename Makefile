@@ -31,7 +31,7 @@ INC_DIRS  = -I include 			\
             -I lib				\
 			-I kernel
 
-CFLAGS = -c -g -std=c11 -mthumb-interwork
+CFLAGS = -c -g -std=c11
 
 LDFLAGS = -nostartfiles -nostdlib -nodefaultlibs -static -lgcc
 

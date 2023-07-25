@@ -8,8 +8,10 @@ const arm = std.Target.arm;
 // Target CPU = Cortex-A8
 
 pub fn build(b: *std.Build) void {
+    var cpu = arm.cpu.cortex_a8.toCpu(Cpu.Arch.arm);
+
     const compilationTarget = std.Target{
-        .cpu = arm.cpu.cortex_a8.toCpu(Cpu.Arch.arm),
+        .cpu = cpu,
         .os = Os{
             .tag = std.Target.Os.Tag.freestanding,
             .version_range = Os.VersionRange.default(Os.Tag.freestanding, Cpu.Arch.arm),
@@ -66,6 +68,7 @@ pub fn build(b: *std.Build) void {
     navilos.setLinkerScriptPath(std.Build.FileSource{
         .path = "navilos.ld",
     });
+    navilos.unwind_tables = false;
 
     b.installArtifact(navilos);
 
@@ -73,12 +76,28 @@ pub fn build(b: *std.Build) void {
         "qemu-system-arm",
         "-M",
         "realview-pb-a8",
-        "-kernel",
-        "./zig-out/bin/navilos",
         "-nographic",
+        "-kernel",
     });
+    run_navilos.addArtifactArg(navilos);
     run_navilos.step.dependOn(&navilos.step);
 
     const run_step = b.step("run", "Run navilos on qemu-system-arm");
     run_step.dependOn(&run_navilos.step);
+
+    const debug_navilos = b.addSystemCommand(&[_][]const u8{
+        "qemu-system-arm",
+        "-M",
+        "realview-pb-a8",
+        "-nographic",
+        "-S",
+        "-gdb",
+        "tcp::1234,ipv4",
+        "-kernel",
+    });
+    debug_navilos.addArtifactArg(navilos);
+    debug_navilos.step.dependOn(&navilos.step);
+
+    const debug_step = b.step("debug", "Debug navilos on qemu-system-arm");
+    debug_step.dependOn(&debug_navilos.step);
 }
