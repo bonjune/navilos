@@ -8,8 +8,7 @@ const arm = std.Target.arm;
 // Target CPU = Cortex-A8
 
 pub fn build(b: *std.Build) void {
-    var cpu = arm.cpu.cortex_a8.toCpu(Cpu.Arch.arm);
-
+    const cpu = arm.cpu.cortex_a8.toCpu(Cpu.Arch.arm);
     const compilationTarget = std.Target{
         .cpu = cpu,
         .os = Os{
@@ -53,8 +52,6 @@ pub fn build(b: *std.Build) void {
             "hal/rvpb/Interrupt.c",
         },
         &.{
-            "-c",
-            "-g",
             "-std=c11",
             // "-mthumb-interwork",
         },
@@ -68,7 +65,6 @@ pub fn build(b: *std.Build) void {
     navilos.setLinkerScriptPath(std.Build.FileSource{
         .path = "navilos.ld",
     });
-    navilos.unwind_tables = false;
 
     b.installArtifact(navilos);
 
